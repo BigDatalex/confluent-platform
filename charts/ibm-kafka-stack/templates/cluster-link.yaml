@@ -1,0 +1,15 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: ClusterLink
+metadata:
+  name: source-to-destination-link
+  namespace: destination
+spec:
+  destinationKafkaCluster:
+    kafkaRestClassRef:
+      name: default
+      namespace: destination
+  sourceKafkaCluster:
+    bootstrapEndpoint: kafka.source.svc.cluster.local:9092
+    kafkaRestClassRef:
+      name: default
+      namespace: source

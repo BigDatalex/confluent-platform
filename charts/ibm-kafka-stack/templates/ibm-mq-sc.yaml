@@ -1,0 +1,22 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: Connector
+metadata:
+  name: ibm-mq-source
+  namespace: {{ .Release.Namespace }}
+spec:
+  class: "io.confluent.connect.ibm.mq.IbmMQSourceConnector"
+  taskMax: 1
+  connectClusterRef:
+    name: connect-cluster
+  configs:
+    kafka.topic: {{ .Values.topic.name }}
+    mq.hostname: "ibmmq.{{ .Release.Namespace }}.svc.cluster.local"
+    mq.port: "1414"
+    mq.queue.manager: {{ .Values.ibmmq.queueManager }}
+    mq.channel: "DEV.APP.SVRCONN"
+    jms.destination.name: {{ .Values.ibmmq.queueName }}
+    mq.username: "app"
+    mq.password: {{ .Values.ibmmq.password }}
+    mq.record.builder: "io.confluent.connect.ibm.mq.record.jms.JmsTextMessageRecordBuilder"
+    key.converter: "org.apache.kafka.connect.storage.StringConverter"
+    value.converter: "org.apache.kafka.connect.storage.StringConverter"

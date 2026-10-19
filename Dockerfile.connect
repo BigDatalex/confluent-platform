@@ -1,0 +1,11 @@
+FROM confluentinc/cp-kafka-connect:7.6.0
+
+# 1. Confluent IBM MQ Connector installieren
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-ibmmq:12.1.2
+
+# 2. IBM MQ All-Client JAR (JMS Driver) direkt in den Plugin-Classpath herunterladen
+ARG MQ_ALLCLIENT_VERSION=9.3.4.0
+RUN curl -fSL "https://repo1.maven.org/maven2/com/ibm/mq/com.ibm.mq.allclient/${MQ_ALLCLIENT_VERSION}/com.ibm.mq.allclient-${MQ_ALLCLIENT_VERSION}.jar" \
+    -o /usr/share/confluent-hub-components/confluentinc-kafka-connect-ibmmq/lib/com.ibm.mq.allclient.jar \
+    && curl -fSL "https://repo1.maven.org/maven2/javax/jms/javax.jms-api/2.0.1/javax.jms-api-2.0.1.jar" \
+    -o /usr/share/confluent-hub-components/confluentinc-kafka-connect-ibmmq/lib/javax.jms-api.jar

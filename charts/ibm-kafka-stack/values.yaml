@@ -1,0 +1,22 @@
+global:
+  namespace: default
+
+kafka:
+  replicas: 3
+  image: confluentinc/cp-server:7.6.0
+  initImage: confluentinc/confluent-init-container:2.8.0
+
+ibmmq:
+  image: icr.io/ibm-messaging/mq:latest
+  password: "password"
+  queueManager: "QM1"
+  queueName: "DEV.QUEUE.1"
+
+connect:
+  image: custom-connect-ibmmq:7.6.0
+  replicas: 1
+
+topic:
+  name: ibmmq-messages
+  partitions: 1
+  replicas: 3

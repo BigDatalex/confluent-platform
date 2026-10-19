@@ -1,0 +1,47 @@
+environments:
+  default:
+    values:
+      - environment: default
+
+---
+
+releases:
+  # 1. Operator im source-Namespace
+  - name: confluent-operator-source
+    namespace: source
+    createNamespace: true
+    chart: confluentinc/confluent-for-kubernetes
+    version: 0.1718.99
+    values:
+      - namespaced: true
+
+  # 2. Operator im destination-Namespace
+  - name: confluent-operator-destination
+    namespace: destination
+    createNamespace: true
+    chart: confluentinc/confluent-for-kubernetes
+    version: 0.1718.99
+    values:
+      - namespaced: true
+
+  # 3. Source Stack (wird vom source-Operator gesteuert)
+  - name: source-stack
+    namespace: source
+    createNamespace: true
+    chart: ./charts/ibm-kafka-stack
+    needs:
+      - source/confluent-operator-source
+    values:
+      - charts/ibm-kafka-stack/values.yaml
+
+  # 4. Destination Stack (wird vom destination-Operator gesteuert)
+  - name: destination-stack
+    namespace: destination
+    createNamespace: true
+    chart: ./charts/ibm-kafka-stack
+    needs:
+      - destination/confluent-operator-destination
+    values:
+      - charts/ibm-kafka-stack/values.yaml
+      - ibmmq:
+          enabled: false
