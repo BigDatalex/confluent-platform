@@ -1,0 +1,5 @@
+apiVersion: v2
+name: confluent-apps
+description: Argo CD app-of-apps that deploys the CFK operators and the source/destination ibm-kafka-stack releases
+type: application
+version: 0.1.0

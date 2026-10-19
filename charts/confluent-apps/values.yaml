@@ -1,0 +1,41 @@
+# Git repo Argo CD pulls charts/ibm-kafka-stack from.
+repoURL: ""          # required, e.g. https://github.com/<org>/confluent-for-kubernetes.git
+targetRevision: main
+
+# Namespace Argo CD runs in (where the Application objects live).
+argocdNamespace: argocd
+project: default
+destinationServer: https://kubernetes.default.svc
+
+operator:
+  repoURL: https://packages.confluent.io/helm
+  chart: confluent-for-kubernetes
+  version: 0.1718.99
+
+# Each stack gets its own namespace with its own namespaced CFK operator.
+stacks:
+  source:
+    namespace: source
+    installCrds: true   # exactly one stack should install the CFK CRDs
+    values:
+      ibmmq:
+        enabled: true
+  destination:
+    namespace: destination
+    installCrds: false
+    values:
+      ibmmq:
+        enabled: false
+      clusterLink:
+        enabled: true
+
+syncPolicy:
+  automated:
+    prune: true
+    selfHeal: true
+  retry:
+    limit: 10
+    backoff:
+      duration: 10s
+      factor: 2
+      maxDuration: 5m

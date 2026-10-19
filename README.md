@@ -65,6 +65,36 @@ Vorschau ohne Änderungen am Cluster: `helmfile diff` bzw. `helmfile template`.
 
 ---
 
+### Alternative: Deployment mit Argo CD
+
+Statt Helmfile kann alles per Argo CD (App-of-Apps) deployt werden. Der Chart `charts/confluent-apps` erzeugt im Namespace `argocd` vier `Application`s:
+
+| Application | Namespace | Sync-Wave |
+|---|---|---|
+| `confluent-operator-source` | `source` | 0 (installiert die CFK CRDs) |
+| `confluent-operator-destination` | `destination` | 0 (`skipCrds`) |
+| `source-stack` | `source` | 1 |
+| `destination-stack` | `destination` | 1 |
+
+Die Namespaces werden von Argo CD angelegt (`CreateNamespace=true`). Namespaces und Stack-Werte lassen sich in `charts/confluent-apps/values.yaml` anpassen.
+
+**Voraussetzungen:** Argo CD läuft im Namespace `argocd`, und dieses Repository liegt in einem Git-Remote, auf das Argo CD zugreifen kann.
+
+1. In `argocd/root-app.yaml` `repoURL` (beide Stellen) zeigt auf `https://github.com/BigDatalex/confluent-platform.git`; Änderungen pushen.
+2. Root-Application anlegen:
+
+   ```bash
+   kubectl apply -n argocd -f argocd/root-app.yaml
+   ```
+
+> **Hinweis:** Argo CD wartet zwischen Sync-Waves von Child-Applications nur, wenn der Health-Check für `argoproj.io/Application` in `argocd-cm` aktiviert ist ([Doku](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/)). Ohne ihn konvergiert das Setup trotzdem: Die Stacks nutzen `SkipDryRunOnMissingResource` und Retries, bis die CRDs des Operators existieren.
+
+> **Hinweis:** Das Image `custom-connect-ibmmq:7.6.0` muss weiterhin wie in Abschnitt 1 lokal in Minikube gebaut werden.
+
+Helmfile und Argo CD nicht parallel auf denselben Cluster anwenden.
+
+---
+
 ## ✉️ 3. Test-Nachricht an IBM MQ senden
 
 Verwende das in IBM MQ enthaltene Test-Tool `amqsput`, um Nachrichten in die Queue `DEV.QUEUE.1` zu schreiben.
@@ -146,3 +176,12 @@ kubectl logs statefulset/connect-cluster -n source --tail=100
 ```bash
 kubectl rollout restart statefulset/connect-cluster -n source
 ```
+
+# Argo CD
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd --server-side --force-conflicts -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d | pbcopy

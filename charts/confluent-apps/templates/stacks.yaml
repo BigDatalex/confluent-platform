@@ -1,0 +1,32 @@
+{{- $repoURL := required "repoURL must be set to the Git repo containing charts/ibm-kafka-stack" .Values.repoURL }}
+{{- range $name, $stack := .Values.stacks }}
+{{- $values := mergeOverwrite (dict "clusterLink" (dict "sourceNamespace" $.Values.stacks.source.namespace)) (deepCopy ($stack.values | default dict)) }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $name }}-stack
+  namespace: {{ $.Values.argocdNamespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $.Values.project }}
+  source:
+    repoURL: {{ $repoURL }}
+    targetRevision: {{ $.Values.targetRevision }}
+    path: charts/ibm-kafka-stack
+    helm:
+      releaseName: {{ $name }}-stack
+      valueFiles:
+        - values.yaml
+      valuesObject:
+        {{- toYaml $values | nindent 8 }}
+  destination:
+    server: {{ $.Values.destinationServer }}
+    namespace: {{ $stack.namespace }}
+  syncPolicy:
+    {{- /* The stack's CFK CRs need the operator's CRDs, which may not exist yet on first sync. */}}
+    {{- include "confluent-apps.syncPolicy" (dict "root" $ "extraSyncOptions" (list "SkipDryRunOnMissingResource=true")) | trim | nindent 4 }}
+{{- end }}
