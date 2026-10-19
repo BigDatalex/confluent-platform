@@ -1,3 +1,4 @@
+{{- if .Values.ibmmq.enabled }}
 apiVersion: platform.confluent.io/v1beta1
 kind: Connector
 metadata:
@@ -20,3 +21,4 @@ spec:
     mq.record.builder: "io.confluent.connect.ibm.mq.record.jms.JmsTextMessageRecordBuilder"
     key.converter: "org.apache.kafka.connect.storage.StringConverter"
     value.converter: "org.apache.kafka.connect.storage.StringConverter"
+{{- end }}

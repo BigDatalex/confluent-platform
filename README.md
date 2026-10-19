@@ -1,6 +1,6 @@
 # 🚀 IBM MQ to Kafka Streaming Pipeline via Confluent for Kubernetes (CFK)
 
-Dieses Repository enthält die deklarative Konfiguration (GitOps-ready) zur Einrichtung einer Event-Streaming-Pipeline von **IBM MQ** nach **Apache Kafka** unter Verwendung von **Confluent for Kubernetes (CFK)** auf **Minikube**.
+Dieses Repository enthält die deklarative Konfiguration (GitOps-ready) zur Einrichtung einer Event-Streaming-Pipeline von **IBM MQ** nach **Apache Kafka** unter Verwendung von **Confluent for Kubernetes (CFK)** auf **Minikube**. Zwei Stacks (`source` und `destination`) werden per **Helmfile** deployt und über einen **Cluster Link** verbunden.
 
 ---
 
@@ -9,7 +9,7 @@ Dieses Repository enthält die deklarative Konfiguration (GitOps-ready) zur Einr
 * **Minikube** (mit aktivierter Container-Runtime)
 * **kubectl**
 * **Docker Desktop**
-* **Confluent for Kubernetes Operator (CFK)** im Cluster installiert
+* **Helm** und **Helmfile** (der CFK Operator wird von Helmfile mitinstalliert)
 
 ---
 
@@ -37,40 +37,31 @@ DOCKER_BUILDKIT=0 docker build -f Dockerfile.connect -t custom-connect-ibmmq:7.6
 
 ## 📦 2. Kubernetes Ressourcen deployen
 
-Deploye die Infrastrukturkomponenten und Custom Resources in der vorgegebenen Reihenfolge.
+Alle Ressourcen werden über `helmfile.yaml` deployt:
 
-### Schritt 2.1: Confluent Platform deployen (KRaft, Kafka, Schema Registry, Control Center, Connect)
+| Release | Namespace | Inhalt |
+|---|---|---|
+| `confluent-operator-source` | `source` | CFK Operator |
+| `confluent-operator-destination` | `destination` | CFK Operator |
+| `source-stack` | `source` | KRaft, Kafka, Schema Registry, Control Center, Connect, IBM MQ, MQ Source Connector, Topic |
+| `destination-stack` | `destination` | wie oben, aber ohne IBM MQ/Connector, dafür mit Cluster Link von `source` |
 
-Deploye die zentrale Confluent Platform-Infrastruktur inklusive KRaft Controller, Kafka Broker, Schema Registry, Control Center und Connect Cluster:
+Der gemeinsame Chart liegt unter `charts/ibm-kafka-stack`, Einstellungen in dessen `values.yaml`.
 
-```bash
-kubectl apply -f kafka_kraft.yaml -n default
-```
-
-### Schritt 2.2: IBM MQ Broker deployen
-
-Deploye den IBM MQ Test-Container (Queue Manager: `QM1`, Queue: `DEV.QUEUE.1`, Channel: `DEV.APP.SVRCONN`):
-
-```bash
-kubectl apply -f ibm-mq.yaml -n default
-```
-
-### Schritt 2.3: Kafka Rest Class & Kafka Topics anlegen
-
-Erstelle das Ziel-Topic `ibmmq-messages` sowie die benötigte `KafkaRestClass`:
+### Schritt 2.1: Confluent Helm Repository hinzufügen
 
 ```bash
-kubectl apply -f kafka-rest-class.yaml -n default
-kubectl apply -f kafka-topic.yaml -n default
+helm repo add confluentinc https://packages.confluent.io/helm
+helm repo update
 ```
 
-### Schritt 2.4: IBM MQ Source Connector deployen
-
-Deploye den Connector zur Anbindung der MQ-Queue `DEV.QUEUE.1`:
+### Schritt 2.2: Alles deployen
 
 ```bash
-kubectl apply -f ibm-mq-sc.yaml -n default
+helmfile apply
 ```
+
+Vorschau ohne Änderungen am Cluster: `helmfile diff` bzw. `helmfile template`.
 
 ---
 
@@ -81,7 +72,7 @@ Verwende das in IBM MQ enthaltene Test-Tool `amqsput`, um Nachrichten in die Que
 **Interaktiven Writer im IBM MQ Pod starten:**
 
 ```bash
-kubectl exec -it deployment/ibmmq -n default -- /opt/mqm/samp/bin/amqsput DEV.QUEUE.1 QM1
+kubectl exec -it deployment/ibmmq -n source -- /opt/mqm/samp/bin/amqsput DEV.QUEUE.1 QM1
 ```
 
 **Test-JSON eingeben und mit Enter bestätigen:**
@@ -97,7 +88,7 @@ kubectl exec -it deployment/ibmmq -n default -- /opt/mqm/samp/bin/amqsput DEV.QU
 Prüfe mit `amqsbcg`, ob die Nachricht in MQ bereitsteht oder bereits vom Connector abgeholt wurde:
 
 ```bash
-kubectl exec -it deployment/ibmmq -n default -- /opt/mqm/samp/bin/amqsbcg DEV.QUEUE.1 QM1
+kubectl exec -it deployment/ibmmq -n source -- /opt/mqm/samp/bin/amqsbcg DEV.QUEUE.1 QM1
 ```
 
 > Zeigt `No more messages` an, sobald der Connector die Nachricht verarbeitet hat.
@@ -111,7 +102,7 @@ kubectl exec -it deployment/ibmmq -n default -- /opt/mqm/samp/bin/amqsbcg DEV.QU
 Öffne ein Terminal und leite den Port des Control Centers weiter:
 
 ```bash
-kubectl port-forward svc/controlcenter 9021:9021 -n default
+kubectl port-forward svc/controlcenter 9021:9021 -n source
 ```
 
 ### Schritt 4.2: Control Center im Browser öffnen
@@ -141,17 +132,17 @@ Hier siehst du die aus IBM MQ gestreamten JSON-Nachrichten inklusive JMS-Metadat
 **Connector Task-Status via REST API prüfen:**
 
 ```bash
-kubectl exec -it connect-cluster-0 -n default -- curl -s http://localhost:8083/connectors/ibm-mq-source/tasks/0/status
+kubectl exec -it connect-cluster-0 -n source -- curl -s http://localhost:8083/connectors/ibm-mq-source/tasks/0/status
 ```
 
 **Connect Cluster Logs einsehen:**
 
 ```bash
-kubectl logs statefulset/connect-cluster -n default --tail=100
+kubectl logs statefulset/connect-cluster -n source --tail=100
 ```
 
 **Connect Pod neu starten (Rollout Restart):**
 
 ```bash
-kubectl rollout restart statefulset/connect-cluster -n default
+kubectl rollout restart statefulset/connect-cluster -n source
 ```

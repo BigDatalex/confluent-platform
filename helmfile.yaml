@@ -45,3 +45,5 @@ releases:
       - charts/ibm-kafka-stack/values.yaml
       - ibmmq:
           enabled: false
+        clusterLink:
+          enabled: true
