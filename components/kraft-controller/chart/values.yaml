@@ -1,0 +1,11 @@
+# Chart defaults. Deployment-specific settings belong in ../values/.
+name: kraftcontroller
+replicas: 3
+dataVolumeCapacity: 10Gi
+
+image:
+  application: ""   # required, set in values/common.yaml
+  init: ""          # required, set in values/common.yaml
+
+podTemplate:
+  resources: {}

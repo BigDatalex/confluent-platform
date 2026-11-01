@@ -1,0 +1,15 @@
+# DEV settings (taken from the existing ibm-kafka-stack configuration).
+replicas: 1
+
+# Custom image with the IBM MQ connector plugin, as used in the existing setup.
+image:
+  application: custom-connect-ibmmq:7.6.0
+
+podTemplate:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi

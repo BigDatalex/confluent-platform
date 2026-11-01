@@ -1,0 +1,15 @@
+# Chart defaults. Deployment-specific settings belong in ../values/.
+name: schemaregistry
+replicas: 1
+
+image:
+  application: ""   # required, set in values/common.yaml
+  init: ""          # required, set in values/common.yaml
+
+dependencies:
+  kafka:
+    name: kafka     # must match the name in the kafka chart
+    port: 9092
+
+podTemplate:
+  resources: {}

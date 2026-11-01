@@ -1,0 +1,16 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: KRaftController
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  dataVolumeCapacity: {{ .Values.dataVolumeCapacity }}
+  image:
+    application: {{ required "image.application is required" .Values.image.application }}
+    init: {{ required "image.init is required" .Values.image.init }}
+  {{- with .Values.podTemplate.resources }}
+  podTemplate:
+    resources:
+      {{- toYaml . | nindent 6 }}
+  {{- end }}

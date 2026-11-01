@@ -1,0 +1,5 @@
+# Values for the external chart confluent-for-kubernetes (packages.confluent.io).
+# The chart version is pinned in argocd/<env>/cfk-operator.yaml (targetRevision).
+
+# Operator watches only its own namespace.
+namespaced: true

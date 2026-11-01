@@ -1,0 +1,6 @@
+apiVersion: v2
+name: connect
+description: Kafka Connect (Connect CR) for Confluent Platform on CFK
+type: application
+version: 0.1.0
+appVersion: "7.6.0"

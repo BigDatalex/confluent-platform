@@ -1,0 +1,22 @@
+# Bootstrap (once): kubectl apply -n argocd -f argocd/root/prod.yaml
+# Argo CD then manages every child Application in argocd/prod/.
+# No cascading-delete finalizer: deleting the PROD root app must not remove
+# the child Applications and their workloads.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: confluent-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/BigDatalex/confluent-platform.git
+    targetRevision: main
+    path: argocd/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

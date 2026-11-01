@@ -1,0 +1,18 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: SchemaRegistry
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  image:
+    application: {{ required "image.application is required" .Values.image.application }}
+    init: {{ required "image.init is required" .Values.image.init }}
+  dependencies:
+    kafka:
+      bootstrapEndpoint: {{ .Values.dependencies.kafka.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.dependencies.kafka.port }}
+  {{- with .Values.podTemplate.resources }}
+  podTemplate:
+    resources:
+      {{- toYaml . | nindent 6 }}
+  {{- end }}

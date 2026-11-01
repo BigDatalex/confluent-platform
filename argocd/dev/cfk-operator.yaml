@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-cfk-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    # External chart, pinned version. Installs the CFK CRDs on first sync.
+    - repoURL: https://packages.confluent.io/helm
+      chart: confluent-for-kubernetes
+      targetRevision: "0.1718.99"
+      helm:
+        releaseName: confluent-operator
+        valueFiles:
+          - $values/components/cfk-operator/values/common.yaml
+          - $values/components/cfk-operator/values/dev.yaml
+    # This repository, providing the values files as $values.
+    - repoURL: https://github.com/BigDatalex/confluent-platform.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: confluent
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true   # CFK CRDs exceed the client-side apply size limit
+    retry:
+      limit: 10
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 5m

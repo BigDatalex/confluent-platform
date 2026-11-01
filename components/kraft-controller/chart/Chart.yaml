@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kraft-controller
+description: KRaft controller (KRaftController CR) for Confluent Platform on CFK
+type: application
+version: 0.1.0
+appVersion: "7.6.0"
