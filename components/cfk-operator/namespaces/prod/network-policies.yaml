@@ -1,0 +1,59 @@
+# Ingress rules for the Confluent Platform namespace. They mirror the target
+# platform, where traffic between namespaces is denied by default, so missing
+# rules show up here first. Rules from the CFK operator namespace are the
+# basis for the network request on the target platform.
+#
+# NetworkPolicies are only enforced with a CNI that supports them, e.g.
+# minikube start --cni=calico (the default kindnet ignores them).
+# Egress is not restricted.
+
+# Deny all ingress into the namespace unless a rule below allows it.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: confluentplatform
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+# Traffic between the components: KRaft (9074), Kafka replication (9072),
+# Kafka listeners (9071/9092), Schema Registry, Connect and Control Center.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-same-namespace
+  namespace: confluentplatform
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
+---
+# The CFK operator calls the component REST APIs directly for its Day-2 CRs:
+# Kafka Admin REST (KafkaTopic, ClusterLink, KafkaRestClass), Schema Registry
+# (Schema) and Connect (Connector). Everything else goes through the API server.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-cfk-operator
+  namespace: confluentplatform
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: openshift-confluent-operator
+      ports:
+        - protocol: TCP
+          port: 8090   # Kafka Admin REST API
+        - protocol: TCP
+          port: 8081   # Schema Registry
+        - protocol: TCP
+          port: 8083   # Connect
