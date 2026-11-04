@@ -13,7 +13,7 @@ spec:
     # External chart, pinned version. Installs the CFK CRDs on first sync.
     - repoURL: https://packages.confluent.io/helm
       chart: confluent-for-kubernetes
-      targetRevision: "0.1718.99"
+      targetRevision: "0.2038.1"
       helm:
         releaseName: confluent-operator
         valueFiles:
