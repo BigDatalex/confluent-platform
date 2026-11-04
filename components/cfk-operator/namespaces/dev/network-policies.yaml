@@ -35,7 +35,9 @@ spec:
 ---
 # The CFK operator calls the component REST APIs directly for its Day-2 CRs:
 # Kafka Admin REST (KafkaTopic, ClusterLink, KafkaRestClass), Schema Registry
-# (Schema) and Connect (Connector). Everything else goes through the API server.
+# (Schema) and Connect (Connector). Before rolling Kafka it checks each broker
+# for under-replicated partitions via Jolokia; without that port the roll hangs.
+# Everything else goes through the API server.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -53,6 +55,8 @@ spec:
       ports:
         - protocol: TCP
           port: 8090   # Kafka Admin REST API
+        - protocol: TCP
+          port: 7777   # Jolokia, URP check before Kafka rolling restarts
         - protocol: TCP
           port: 8081   # Schema Registry
         - protocol: TCP
