@@ -16,6 +16,10 @@ spec:
       clusterRef:
         name: {{ .Values.dependencies.kraftController.name }}
         namespace: {{ .Release.Namespace }}
+  {{- with .Values.license }}
+  license:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.podTemplate.resources }}
   podTemplate:
     resources:

@@ -13,6 +13,10 @@ spec:
       bootstrapEndpoint: {{ .Values.dependencies.kafka.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.dependencies.kafka.port }}
     schemaRegistry:
       url: http://{{ .Values.dependencies.schemaRegistry.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.dependencies.schemaRegistry.port }}
+  {{- with .Values.license }}
+  license:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.podTemplate.resources }}
   podTemplate:
     resources:

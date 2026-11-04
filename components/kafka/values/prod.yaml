@@ -1,12 +1,3 @@
 # PROD settings. Initial sizing assumption, to be confirmed before go-live.
 replicas: 3
 dataVolumeCapacity: 100Gi
-
-podTemplate:
-  resources:
-    requests:
-      cpu: "2"
-      memory: 8Gi
-    limits:
-      cpu: "4"
-      memory: 16Gi

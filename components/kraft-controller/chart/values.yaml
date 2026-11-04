@@ -9,3 +9,6 @@ image:
 
 podTemplate:
   resources: {}
+
+# CFK spec.license, e.g. {secretRef: confluent-license}. Empty: no license (trial/developer).
+license: {}

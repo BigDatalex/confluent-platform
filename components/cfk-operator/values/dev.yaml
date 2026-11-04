@@ -1,2 +1,4 @@
 # DEV overrides for the CFK operator.
-# No DEV-specific settings yet; the common values apply.
+# Namespace with the DEV Confluent Platform CRs.
+namespaceList:
+  - confluentplatform-staging

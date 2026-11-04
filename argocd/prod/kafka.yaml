@@ -20,7 +20,7 @@ spec:
         - ../values/prod.yaml
   destination:
     server: https://kubernetes.default.svc   # TODO: replace with the PROD cluster API server
-    namespace: confluent
+    namespace: confluentplatform
   syncPolicy:
     # Manual sync in PROD: review the diff in Argo CD, then sync.
     syncOptions:

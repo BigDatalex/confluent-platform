@@ -9,6 +9,10 @@ spec:
   image:
     application: {{ required "image.application is required" .Values.image.application }}
     init: {{ required "image.init is required" .Values.image.init }}
+  {{- with .Values.license }}
+  license:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.podTemplate.resources }}
   podTemplate:
     resources:

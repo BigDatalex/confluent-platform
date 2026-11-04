@@ -1,12 +1,3 @@
 # DEV settings (taken from the existing ibm-kafka-stack configuration).
 replicas: 3
 dataVolumeCapacity: 10Gi
-
-podTemplate:
-  resources:
-    requests:
-      cpu: 100m
-      memory: 512Mi
-    limits:
-      cpu: 500m
-      memory: 1Gi

@@ -11,6 +11,10 @@ spec:
   dependencies:
     kafka:
       bootstrapEndpoint: {{ .Values.dependencies.kafka.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.dependencies.kafka.port }}
+  {{- with .Values.license }}
+  license:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.podTemplate.resources }}
   podTemplate:
     resources:

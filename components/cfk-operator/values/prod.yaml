@@ -1,2 +1,4 @@
 # PROD overrides for the CFK operator.
-# No PROD-specific settings yet; the common values apply.
+# Namespace with the PROD Confluent Platform CRs.
+namespaceList:
+  - confluentplatform

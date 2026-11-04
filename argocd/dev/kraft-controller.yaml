@@ -20,7 +20,7 @@ spec:
         - ../values/dev.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: confluent
+    namespace: confluentplatform-staging
   syncPolicy:
     automated:
       prune: true

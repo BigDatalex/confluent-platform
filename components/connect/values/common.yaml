@@ -4,3 +4,20 @@
 image:
   application: confluentinc/cp-server-connect:7.6.0
   init: confluentinc/confluent-init-container:2.8.0
+
+# CFK default pod resources (docs.confluent.io/operator/current/co-plan-sizing.html),
+# set explicitly for DEV and PROD.
+podTemplate:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Confluent license (placeholder). Create the secret outside Git, then uncomment:
+#   echo -n "license=<LICENSE_KEY>" > license.txt
+#   kubectl -n <confluentplatform-staging|confluentplatform> create secret generic confluent-license --from-file=license.txt=./license.txt
+# license:
+#   secretRef: confluent-license

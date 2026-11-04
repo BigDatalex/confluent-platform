@@ -23,9 +23,14 @@ spec:
     - repoURL: https://github.com/BigDatalex/confluent-platform.git
       targetRevision: main
       ref: values
+    # This repository: the namespace for the CRs, created before the CR apps
+    # sync, so it exists as soon as the operator starts watching it.
+    - repoURL: https://github.com/BigDatalex/confluent-platform.git
+      targetRevision: main
+      path: components/cfk-operator/namespaces/dev
   destination:
     server: https://kubernetes.default.svc
-    namespace: confluent
+    namespace: openshift-confluent-operator
   syncPolicy:
     automated:
       prune: true

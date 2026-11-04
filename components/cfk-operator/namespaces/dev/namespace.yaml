@@ -1,0 +1,10 @@
+# Namespace for the Confluent Platform CRs. Synced with the operator (wave 0),
+# so it exists before the operator watches it and before the CR apps sync.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: confluentplatform-staging
+  annotations:
+    # Never delete the namespace (and the Kafka data in it) when the operator
+    # app is deleted or this file is removed.
+    argocd.argoproj.io/sync-options: Delete=false

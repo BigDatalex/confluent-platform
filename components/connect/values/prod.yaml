@@ -1,15 +1,2 @@
 # PROD settings. Initial sizing assumption, to be confirmed before go-live.
 replicas: 2
-
-# The connector plugins required in PROD (e.g. IBM MQ) must be part of an image
-# in a registry reachable from the PROD cluster. Until then the standard image
-# from common.yaml is used.
-
-podTemplate:
-  resources:
-    requests:
-      cpu: "1"
-      memory: 2Gi
-    limits:
-      cpu: "2"
-      memory: 4Gi
