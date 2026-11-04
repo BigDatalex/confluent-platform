@@ -7,6 +7,11 @@ image:
   application: ""   # required, set in values/common.yaml
   init: ""          # required, set in values/common.yaml
 
+# Name of a next-gen Control Center in the same namespace to send metrics to
+# (CFK spec.dependencies.metricsClient). Empty: no metrics export.
+metricsClient:
+  controlCenterName: ""
+
 podTemplate:
   resources: {}
 

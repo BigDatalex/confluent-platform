@@ -15,6 +15,18 @@ dependencies:
     name: schemaregistry   # must match the name in the schema-registry chart
     port: 8081
 
+# Next-gen Control Center (2.x) with its bundled Prometheus and Alertmanager.
+# Disabled: Control Center (Legacy). Switching needs a new name, as there is
+# no in-place upgrade from Legacy. Kafka and KRaft send their metrics to it
+# via metricsClient.controlCenterName in their charts.
+nextGen:
+  enabled: false
+  prometheus:
+    image: ""   # required when enabled, same tag as image.application
+    dataVolumeCapacity: 10Gi
+  alertmanager:
+    image: ""   # required when enabled, same tag as image.application
+
 podTemplate:
   resources: {}
 

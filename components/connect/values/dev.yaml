@@ -1,2 +1,6 @@
 # DEV settings.
 replicas: 1
+
+# CP 8.4.0 under test in DEV.
+image:
+  application: confluentinc/cp-server-connect:8.4.0

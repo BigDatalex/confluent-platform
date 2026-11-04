@@ -12,3 +12,10 @@ podTemplate:
     limits:
       cpu: "1"
       memory: 4Gi
+
+# CP 8.4.0 under test in DEV, with metrics export to the next-gen Control
+# Center. See control-center/values/dev.yaml.
+image:
+  application: confluentinc/cp-server:8.4.0
+metricsClient:
+  controlCenterName: controlcenter-next-gen

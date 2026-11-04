@@ -14,6 +14,11 @@ dependencies:
   kraftController:
     name: kraftcontroller   # must match the name in the kraft-controller chart
 
+# Name of a next-gen Control Center in the same namespace to send metrics to
+# (CFK spec.dependencies.metricsClient). Empty: no metrics export.
+metricsClient:
+  controlCenterName: ""
+
 podTemplate:
   resources: {}
 

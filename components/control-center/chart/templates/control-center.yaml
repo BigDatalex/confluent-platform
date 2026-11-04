@@ -14,6 +14,21 @@ spec:
       bootstrapEndpoint: {{ .Values.dependencies.kafka.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.dependencies.kafka.port }}
     schemaRegistry:
       url: http://{{ .Values.dependencies.schemaRegistry.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.dependencies.schemaRegistry.port }}
+    {{- if .Values.nextGen.enabled }}
+    prometheusClient:
+      url: http://{{ .Values.name }}.{{ .Release.Namespace }}.svc.cluster.local:9090
+    alertManagerClient:
+      url: http://{{ .Values.name }}.{{ .Release.Namespace }}.svc.cluster.local:9093
+    {{- end }}
+  {{- if .Values.nextGen.enabled }}
+  services:
+    prometheus:
+      image: {{ required "nextGen.prometheus.image is required" .Values.nextGen.prometheus.image }}
+      pvc:
+        dataVolumeCapacity: {{ .Values.nextGen.prometheus.dataVolumeCapacity }}
+    alertmanager:
+      image: {{ required "nextGen.alertmanager.image is required" .Values.nextGen.alertmanager.image }}
+  {{- end }}
   {{- with .Values.license }}
   license:
     {{- toYaml . | nindent 4 }}

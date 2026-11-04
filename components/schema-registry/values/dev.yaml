@@ -1,2 +1,6 @@
 # DEV settings (taken from the existing ibm-kafka-stack configuration).
 replicas: 1
+
+# CP 8.4.0 under test in DEV.
+image:
+  application: confluentinc/cp-schema-registry:8.4.0
