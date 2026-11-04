@@ -18,5 +18,8 @@ dependencies:
 podTemplate:
   resources: {}
 
+# CFK spec.configOverrides.jvm, e.g. [-Xms1G, -Xmx1G]. Empty: CFK default heap (256M).
+jvm: []
+
 # CFK spec.license, e.g. {secretRef: confluent-license}. Empty: no license (trial/developer).
 license: {}

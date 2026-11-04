@@ -5,13 +5,16 @@ image:
   application: confluentinc/cp-server-connect:7.6.0
   init: confluentinc/confluent-init-container:2.8.0
 
-# Connect needs more than the CFK defaults (256Mi/512Mi): 256M heap plus the
-# metaspace for plugin scanning in cp-server-connect exceeds 512Mi (OOMKilled).
+# CFK defaults (256M heap, 512Mi limit) are too small: heap plus the metaspace
+# for plugin scanning in cp-server-connect exceeds 512Mi (OOMKilled).
+jvm:
+  - -Xms1G
+  - -Xmx1G
 podTemplate:
   resources:
     requests:
       cpu: 500m
-      memory: 1Gi
+      memory: 2Gi
     limits:
       cpu: "2"
       memory: 2Gi

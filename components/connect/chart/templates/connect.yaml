@@ -22,3 +22,8 @@ spec:
     resources:
       {{- toYaml . | nindent 6 }}
   {{- end }}
+  {{- with .Values.jvm }}
+  configOverrides:
+    jvm:
+      {{- toYaml . | nindent 6 }}
+  {{- end }}
