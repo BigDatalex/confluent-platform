@@ -2,12 +2,13 @@
 replicas: 3
 dataVolumeCapacity: 10Gi
 
-# Heap = memory request (5G), see common.yaml.
+# Sized for local minikube: 3 brokers with 5Gi/10Gi starved etcd and the API
+# server. CFK derives the heap from the memory request, see common.yaml.
 podTemplate:
   resources:
     requests:
-      cpu: "1"
-      memory: 5Gi
+      cpu: 500m
+      memory: 2Gi
     limits:
-      cpu: "2"
-      memory: 10Gi
+      cpu: "1"
+      memory: 4Gi

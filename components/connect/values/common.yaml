@@ -3,7 +3,7 @@
 # then moved here once promoted.
 image:
   application: confluentinc/cp-server-connect:7.6.0
-  init: confluentinc/confluent-init-container:2.8.0
+  init: confluentinc/confluent-init-container:3.4.0
 
 # CFK defaults (256M heap, 512Mi limit) are too small: heap plus the metaspace
 # for plugin scanning in cp-server-connect exceeds 512Mi (OOMKilled).

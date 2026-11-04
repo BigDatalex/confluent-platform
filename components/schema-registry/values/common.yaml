@@ -3,7 +3,7 @@
 # then moved here once promoted.
 image:
   application: confluentinc/cp-schema-registry:7.6.0
-  init: confluentinc/confluent-init-container:2.8.0
+  init: confluentinc/confluent-init-container:3.4.0
 
 # CFK default pod resources (docs.confluent.io/operator/current/co-plan-sizing.html),
 # set explicitly for DEV and PROD.
