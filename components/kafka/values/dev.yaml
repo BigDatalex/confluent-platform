@@ -1,3 +1,13 @@
 # DEV settings (taken from the existing ibm-kafka-stack configuration).
 replicas: 3
 dataVolumeCapacity: 10Gi
+
+# Heap = memory request (5G), see common.yaml.
+podTemplate:
+  resources:
+    requests:
+      cpu: "1"
+      memory: 5Gi
+    limits:
+      cpu: "2"
+      memory: 10Gi

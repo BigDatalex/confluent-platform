@@ -5,16 +5,14 @@ image:
   application: confluentinc/cp-server:7.6.0
   init: confluentinc/confluent-init-container:2.8.0
 
-# CFK defaults (256M heap, 512Mi limit) are too small: cp-server brokers run
-# out of heap (java.lang.OutOfMemoryError) and fail their readiness probes.
-jvm:
-  - -Xms1G
-  - -Xmx1G
+# CFK sets the JVM heap (-Xms/-Xmx) to the memory request, so the request is
+# the heap size and the limit must be higher (page cache, off-heap). With
+# request == limit the container is OOMKilled. Baseline; override per env.
 podTemplate:
   resources:
     requests:
       cpu: 500m
-      memory: 2Gi
+      memory: 1Gi
     limits:
       cpu: "2"
       memory: 2Gi
