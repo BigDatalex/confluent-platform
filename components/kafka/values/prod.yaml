@@ -1,3 +1,16 @@
 # PROD settings. Initial sizing assumption, to be confirmed before go-live.
 replicas: 3
-dataVolumeCapacity: 100Gi
+dataVolumeCapacity: 80Gi
+
+# Prod quota, see kraft-controller/values/prod.yaml.
+# CFK sets the broker heap (-Xms/-Xmx) to min(50% of the memory request, 32Gi),
+# here 4Gi; the rest of the limit is left for the page cache and off-heap
+# (docs.confluent.io/operator/3.4/co-resources.html). Override with jvm.
+podTemplate:
+  resources:
+    requests:
+      cpu: "2"
+      memory: 8Gi
+    limits:
+      cpu: "4"
+      memory: 16Gi

@@ -22,8 +22,14 @@ spec:
     resources:
       {{- toYaml . | nindent 6 }}
   {{- end }}
-  {{- with .Values.jvm }}
+  {{- if or .Values.serverConfig .Values.jvm }}
   configOverrides:
+    {{- with .Values.serverConfig }}
+    server:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.jvm }}
     jvm:
       {{- toYaml . | nindent 6 }}
+    {{- end }}
   {{- end }}

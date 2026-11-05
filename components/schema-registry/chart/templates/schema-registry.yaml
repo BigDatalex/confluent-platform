@@ -20,3 +20,8 @@ spec:
     resources:
       {{- toYaml . | nindent 6 }}
   {{- end }}
+  {{- with .Values.serverConfig }}
+  configOverrides:
+    server:
+      {{- toYaml . | nindent 6 }}
+  {{- end }}

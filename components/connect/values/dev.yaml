@@ -1,2 +1,23 @@
 # DEV settings.
 replicas: 1
+# Single Kafka broker in staging, see kafka/values/dev.yaml.
+serverConfig:
+  - config.storage.replication.factor=1
+  - offset.storage.replication.factor=1
+  - status.storage.replication.factor=1
+  - confluent.topic.replication.factor=1
+
+# Staging quota: 12 CPU / 60Gi limits for the whole namespace. Memory is the
+# CFK minimum (docs.confluent.io/operator/current/co-plan-sizing.html), CPU is
+# scaled down to fit; requests are half the limits.
+# Heap: CFK default (100% of the memory request, 8Gi) instead of the fixed 1G
+# from common.yaml, which is sized for the 2Gi limit in prod.
+jvm: []
+podTemplate:
+  resources:
+    requests:
+      cpu: 1
+      memory: 8Gi
+    limits:
+      cpu: "2"
+      memory: 16Gi

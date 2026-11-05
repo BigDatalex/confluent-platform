@@ -1,3 +1,27 @@
 # DEV settings (taken from the existing ibm-kafka-stack configuration).
-replicas: 3
+# Staging: a single controller (no quorum fault tolerance). Scaling KRaft
+# controllers in place is not supported; changing this needs a fresh cluster.
+replicas: 1
 dataVolumeCapacity: 10Gi
+
+# Staging quota: 12 CPU / 60Gi limits for the whole namespace. Memory is the
+# CFK minimum (docs.confluent.io/operator/current/co-plan-sizing.html), CPU is
+# scaled down to fit; requests are half the limits.
+#   Limits (CPU / memory)   CFK minimum   staging
+#   Kafka                   4 / 16Gi      3 / 20Gi
+#   KRaft controller        3 / 4Gi       1.5 / 4Gi
+#   Connect                 4 / 16Gi      2 / 16Gi
+#   Schema Registry         2 / 4Gi       1 / 4Gi
+#   Control Center          4 / 8Gi       2 / 8Gi
+#   Total                   17 / 48Gi     9.5 / 52Gi
+# The rest (2.5 CPU / 8Gi) is left for Prometheus and Alertmanager in the
+# Control Center pod, which get the namespace's default limits.
+# CFK sets the controller heap to 80% of the memory request.
+podTemplate:
+  resources:
+    requests:
+      cpu: 750m
+      memory: 2Gi
+    limits:
+      cpu: 1500m
+      memory: 4Gi

@@ -1,3 +1,14 @@
 # PROD settings. Initial sizing assumption, to be confirmed before go-live.
 replicas: 1
-dataVolumeCapacity: 50Gi
+dataVolumeCapacity: 10Gi
+
+# Prod quota, see kraft-controller/values/prod.yaml.
+# CFK sets the heap to 100% of the memory request.
+podTemplate:
+  resources:
+    requests:
+      cpu: "1"
+      memory: 4Gi
+    limits:
+      cpu: "2"
+      memory: 8Gi

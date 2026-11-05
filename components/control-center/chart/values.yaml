@@ -30,6 +30,10 @@ nextGen:
 podTemplate:
   resources: {}
 
+# CFK spec.configOverrides.server, e.g. [offsets.topic.replication.factor=1].
+# Empty: CFK defaults.
+serverConfig: []
+
 # CFK spec.configOverrides.jvm, e.g. [-Xms1G, -Xmx1G]. Empty: CFK default heap (256M).
 jvm: []
 

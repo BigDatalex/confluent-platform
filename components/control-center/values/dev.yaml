@@ -1,3 +1,23 @@
 # DEV settings (taken from the existing ibm-kafka-stack configuration).
 replicas: 1
 dataVolumeCapacity: 10Gi
+# Single Kafka broker in staging, see kafka/values/dev.yaml.
+serverConfig:
+  - confluent.controlcenter.command.topic.replication=1
+  - confluent.controlcenter.replication.factor=1
+  - confluent.controlcenter.internal.topics.replication=1
+  - confluent.metrics.topic.replication=1
+  - confluent.monitoring.interceptor.topic.replication=1
+  - confluent.metrics.reporter.topic.replicas=1
+
+# Staging quota: 12 CPU / 60Gi limits for the whole namespace. Memory is the
+# CFK minimum (docs.confluent.io/operator/current/co-plan-sizing.html), CPU is
+# scaled down to fit; requests are half the limits.
+podTemplate:
+  resources:
+    requests:
+      cpu: 1
+      memory: 4Gi
+    limits:
+      cpu: "2"
+      memory: 8Gi

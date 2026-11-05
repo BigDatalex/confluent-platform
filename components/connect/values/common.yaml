@@ -7,20 +7,7 @@ image:
 
 # CFK defaults (256M heap, 512Mi limit) are too small: heap plus the metaspace
 # for plugin scanning in cp-server-connect exceeds 512Mi (OOMKilled).
+# Keep the memory limit in dev.yaml/prod.yaml well above the heap.
 jvm:
   - -Xms1G
   - -Xmx1G
-podTemplate:
-  resources:
-    requests:
-      cpu: 500m
-      memory: 2Gi
-    limits:
-      cpu: "2"
-      memory: 2Gi
-
-# Confluent license (placeholder). Create the secret outside Git, then uncomment:
-#   echo -n "license=<LICENSE_KEY>" > license.txt
-#   kubectl -n <confluentplatform-staging|confluentplatform> create secret generic confluent-license --from-file=license.txt=./license.txt
-# license:
-#   secretRef: confluent-license

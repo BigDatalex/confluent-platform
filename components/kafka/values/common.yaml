@@ -9,21 +9,3 @@ image:
 # control-center/values/common.yaml.
 metricsClient:
   controlCenterName: controlcenter-next-gen
-
-# CFK sets the JVM heap (-Xms/-Xmx) to the memory request, so the request is
-# the heap size and the limit must be higher (page cache, off-heap). With
-# request == limit the container is OOMKilled. Baseline; override per env.
-podTemplate:
-  resources:
-    requests:
-      cpu: 500m
-      memory: 1Gi
-    limits:
-      cpu: "2"
-      memory: 2Gi
-
-# Confluent license (placeholder). Create the secret outside Git, then uncomment:
-#   echo -n "license=<LICENSE_KEY>" > license.txt
-#   kubectl -n <confluentplatform-staging|confluentplatform> create secret generic confluent-license --from-file=license.txt=./license.txt
-# license:
-#   secretRef: confluent-license

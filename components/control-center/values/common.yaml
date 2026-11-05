@@ -14,18 +14,3 @@ nextGen:
     image: confluentinc/cp-enterprise-prometheus:2.7.0
   alertmanager:
     image: confluentinc/cp-enterprise-alertmanager:2.7.0
-
-podTemplate:
-  resources:
-    requests:
-      cpu: "2"
-      memory: 4Gi
-    limits:
-      cpu: "4"
-      memory: 8Gi
-
-# Confluent license (placeholder). Create the secret outside Git, then uncomment:
-#   echo -n "license=<LICENSE_KEY>" > license.txt
-#   kubectl -n <confluentplatform-staging|confluentplatform> create secret generic confluent-license --from-file=license.txt=./license.txt
-# license:
-#   secretRef: confluent-license

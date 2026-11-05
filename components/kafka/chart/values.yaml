@@ -22,7 +22,12 @@ metricsClient:
 podTemplate:
   resources: {}
 
-# CFK spec.configOverrides.jvm, e.g. [-Xms1G, -Xmx1G]. Empty: CFK default heap (256M).
+# CFK spec.configOverrides.server, e.g. [offsets.topic.replication.factor=1].
+# Empty: CFK defaults.
+serverConfig: []
+
+# CFK spec.configOverrides.jvm, e.g. [-Xms6G, -Xmx6G]. Empty: CFK default heap,
+# min(50% of the memory request, 32Gi) for brokers.
 jvm: []
 
 # CFK spec.license, e.g. {secretRef: confluent-license}. Empty: no license (trial/developer).
