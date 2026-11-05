@@ -18,14 +18,13 @@ serverConfig:
   - confluent.security.event.logger.exporter.kafka.topic.replicas=1
   - event.logger.exporter.kafka.topic.replicas=1
 
-# Staging quota: 12 CPU / 60Gi limits for the whole namespace, see
-# kraft-controller/values/dev.yaml. CPU is scaled down from the CFK minimum (4).
-# CFK sets the broker heap to 50% of the memory request (5Gi), see prod.yaml.
+# Sized for local minikube (38g), see kraft-controller/values/dev.yaml.
+# CFK sets the broker heap to 50% of the memory request (2Gi), see prod.yaml.
 podTemplate:
   resources:
     requests:
       cpu: 1500m
-      memory: 10Gi
+      memory: 4Gi
     limits:
       cpu: "3"
-      memory: 20Gi
+      memory: 8Gi

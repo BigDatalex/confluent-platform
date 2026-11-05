@@ -5,6 +5,7 @@
 # start minikube
 ```bash
 minikube start --cpus 15 --memory 38g
+minikube start --cni=calico --cpus 15 --memory 38g
 ```
 
 # Create argocd

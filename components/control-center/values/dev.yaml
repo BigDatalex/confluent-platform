@@ -10,9 +10,8 @@ serverConfig:
   - confluent.monitoring.interceptor.topic.replication=1
   - confluent.metrics.reporter.topic.replicas=1
 
-# Staging quota: 12 CPU / 60Gi limits for the whole namespace. Memory is the
-# CFK minimum (docs.confluent.io/operator/current/co-plan-sizing.html), CPU is
-# scaled down to fit; requests are half the limits.
+# Sized for local minikube (38g), see kraft-controller/values/dev.yaml.
+# CFK sets the heap to 100% of the memory request.
 podTemplate:
   resources:
     requests:
