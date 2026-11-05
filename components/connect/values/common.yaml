@@ -2,7 +2,7 @@
 # Image upgrades are tested in DEV first by overriding image.* in dev.yaml,
 # then moved here once promoted.
 image:
-  application: confluentinc/cp-server-connect:7.6.0
+  application: confluentinc/cp-server-connect:8.4.0
   init: confluentinc/confluent-init-container:3.4.0
 
 # CFK defaults (256M heap, 512Mi limit) are too small: heap plus the metaspace

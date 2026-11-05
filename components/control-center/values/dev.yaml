@@ -1,15 +1,3 @@
 # DEV settings (taken from the existing ibm-kafka-stack configuration).
 replicas: 1
 dataVolumeCapacity: 10Gi
-
-# CP 8.4.0 under test in DEV: next-gen Control Center 2.7.0 (Legacy is not
-# supported on CP 8.x; CFK 3.4.x supports Control Center 2.4.x - 2.7.x).
-name: controlcenter-next-gen
-image:
-  application: confluentinc/cp-enterprise-control-center-next-gen:2.7.0
-nextGen:
-  enabled: true
-  prometheus:
-    image: confluentinc/cp-enterprise-prometheus:2.7.0
-  alertmanager:
-    image: confluentinc/cp-enterprise-alertmanager:2.7.0

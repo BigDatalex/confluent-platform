@@ -2,7 +2,7 @@
 # Image upgrades are tested in DEV first by overriding image.* in dev.yaml,
 # then moved here once promoted.
 image:
-  application: confluentinc/cp-schema-registry:7.6.0
+  application: confluentinc/cp-schema-registry:8.4.0
   init: confluentinc/confluent-init-container:3.4.0
 
 # CFK default pod resources (docs.confluent.io/operator/current/co-plan-sizing.html),
