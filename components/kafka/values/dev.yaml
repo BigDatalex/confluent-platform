@@ -20,11 +20,19 @@ serverConfig:
 
 # Sized for local minikube (38g), see kraft-controller/values/dev.yaml.
 # CFK sets the broker heap to 50% of the memory request (2Gi), see prod.yaml.
+# Ephemeral storage is requested explicitly as on HICP, where the quota
+# limits requests.ephemeral-storage and the LimitRange has no default for it.
 podTemplate:
   resources:
     requests:
       cpu: 1500m
       memory: 4Gi
+      ephemeral-storage: 1Gi
     limits:
       cpu: "3"
       memory: 8Gi
+
+# Minimal test (Kafka + KRaft only): no Control Center to export
+# metrics to, so metrics export is disabled.
+metricsClient:
+  controlCenterName: ""
