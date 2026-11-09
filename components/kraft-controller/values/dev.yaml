@@ -17,18 +17,11 @@ dataVolumeCapacity: 10Gi
 # The rest is left for Kubernetes, Argo CD, the CFK operator, and Prometheus
 # and Alertmanager in the Control Center pod.
 # CFK sets the controller heap to 80% of the memory request.
-# Ephemeral storage must be requested explicitly, see kafka/values/dev.yaml.
 podTemplate:
   resources:
     requests:
       cpu: 750m
       memory: 1Gi
-      ephemeral-storage: 1Gi
     limits:
       cpu: 1500m
       memory: 2Gi
-
-# Minimal test (Kafka + KRaft only): no Control Center to export
-# metrics to, so metrics export is disabled.
-metricsClient:
-  controlCenterName: ""
